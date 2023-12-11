@@ -16,19 +16,33 @@ namespace SchoolSystem
 
         public void Run()
         {
-            //Menu here
-            DisplayMenu();
+            bool loop = true;
+
+            while (loop)
+            {
+                int option = DisplayMenu();
+
+                switch (option)
+                {
+                    case 1:
+                        ado.GetEmployees();
+                        Console.ReadKey();
+                        break;
+
+                    case 2:
+                        break;
+
+                    case 3:
+                        ado.AddEmployee();
+                        Console.ReadKey();
+                        break;
+                }
+            }
         }
 
-        public void DisplayMenu()
+        public int DisplayMenu()
         {
-            /*
-             
-            30=Black, 31=Red, 32=Green, 33=Yellow, 
-            34=Blue, 35=Magenta, 36=Cyan, 37=white
-
-            */
-
+            Console.Clear();
             Console.OutputEncoding = Encoding.UTF8;
             Console.CursorVisible = false;
             Console.WriteLine("\nUse ⬆️  and ⬇️  to navigate and press \u001b[34mEnter/Return\u001b[0m to select:");
@@ -39,7 +53,6 @@ namespace SchoolSystem
             ConsoleKeyInfo key;
             bool isSelected = false;
 
-
             while (!isSelected)
             {
                 Console.SetCursorPosition(left, top);
@@ -48,7 +61,6 @@ namespace SchoolSystem
                 Console.WriteLine($"{(option == 2 ? decorator : "   ")}2 All Students\u001b[34m");
                 Console.WriteLine($"{(option == 3 ? decorator : "   ")}3 Add New Employee\u001b[34m");
                 Console.WriteLine($"{(option == 4 ? decorator : "   ")}4 Add New Student\u001b[34m");
-
 
                 key = Console.ReadKey(false);
 
@@ -65,11 +77,12 @@ namespace SchoolSystem
                     case ConsoleKey.Enter:
                         isSelected = true;
                         break;
+                        return option;
                 }
             }
+            Console.WriteLine($"\n{decorator} {option}\u001b[0m");
 
-            Console.WriteLine($"\n{decorator}You selected {option}");
-            Console.ReadLine();
+            return option;
         }
     }
 }

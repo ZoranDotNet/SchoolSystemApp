@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SchoolSystem.Models;
+﻿namespace SchoolSystem.Models;
 
 public partial class Employee
 {
@@ -15,7 +12,9 @@ public partial class Employee
 
     public decimal Salary { get; set; }
 
-    public DateOnly HiredDate { get; set; }
+    public DateTime HiredDate { get; set; }
+
+    public int? WorkedYears { get; set; }
 
     public int? FkPosition { get; set; }
 
