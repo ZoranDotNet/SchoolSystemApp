@@ -111,7 +111,8 @@ namespace SchoolSystem
                 Console.Write("Try again.. ");
             }
 
-            string inputHired = "";
+            Console.WriteLine("Enter HiredDate (YYYY-MM-DD)");
+            string inputHired = Console.ReadLine();
 
             DateTime parsedHired = ValidateDateFormat(inputHired);
             Console.Clear();
@@ -153,9 +154,6 @@ namespace SchoolSystem
             DateTime parsedHired;
             while (true)
             {
-                Console.WriteLine("Enter HiredDate (YYYY-MM-DD)");
-                input = Console.ReadLine();
-
                 if (DateTime.TryParseExact(input, "yyyy-mm-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedHired))
                 {
                     parsedHired = parsedHired.Date;
@@ -163,7 +161,7 @@ namespace SchoolSystem
                 }
                 else
                 {
-                    Console.WriteLine("Invalid date Format. Try again.");
+                    Console.WriteLine("Invalid Date Format. Try again. (YYYY-MM-DD");
                 }
             }
             return parsedHired;
