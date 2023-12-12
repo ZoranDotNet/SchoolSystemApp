@@ -1,5 +1,6 @@
 ﻿using SchoolSystem.Models;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace SchoolSystem
@@ -111,22 +112,10 @@ namespace SchoolSystem
             }
 
             string inputHired = "";
-            while (!loop)
-            {
-                Console.WriteLine("Enter HiredDate (YYYY-MM-DD)");
-                inputHired = Console.ReadLine();
-                loop = ValidateDateFormat(inputHired);
 
-                if (!loop)
-                {
-                    Console.WriteLine("Wrong Format, try again ");
-                }
-            }
-            //Parse to DateTime then save as Date without time.
-            DateTime.TryParse(inputHired, out DateTime parsedHired);
-            parsedHired = parsedHired.Date;
-
+            DateTime parsedHired = ValidateDateFormat(inputHired);
             Console.Clear();
+
             Console.WriteLine("Enter Position for new Employee");
             Console.WriteLine("1 for Teacher\n2 for Principal\n3 for Administration\n4 for Janitor");
             int position;
@@ -159,10 +148,25 @@ namespace SchoolSystem
             string pattern = @"^\d{8}-\d{4}$";
             return Regex.IsMatch(input, pattern);
         }
-        private bool ValidateDateFormat(string input)
+        private DateTime ValidateDateFormat(string input)
         {
-            string pattern = @"^\d{4}-\d{2}-\d{2}$";
-            return Regex.IsMatch(input, pattern);
+            DateTime parsedHired;
+            while (true)
+            {
+                Console.WriteLine("Enter HiredDate (YYYY-MM-DD)");
+                input = Console.ReadLine();
+
+                if (DateTime.TryParseExact(input, "yyyy-mm-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedHired))
+                {
+                    parsedHired = parsedHired.Date;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date Format. Try again.");
+                }
+            }
+            return parsedHired;
         }
     }
 }
