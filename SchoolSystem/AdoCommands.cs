@@ -1,6 +1,5 @@
 ﻿using SchoolSystem.Models;
 using System.Data.SqlClient;
-using System.Text.RegularExpressions;
 
 namespace SchoolSystem
 {
@@ -65,7 +64,7 @@ namespace SchoolSystem
                         int rows = cmd.ExecuteNonQuery();
                         if (rows > 0)
                         {
-                            Console.WriteLine($"New Employee added to Db");
+                            Console.WriteLine($"New Employee added to system");
                         }
                         else
                         {
@@ -85,17 +84,32 @@ namespace SchoolSystem
         private Employee Enteremployee()
         {
             bool loop = false;
-            Console.WriteLine("Enter New Employees Firstname");
-            string inputFirstName = Console.ReadLine();
-            Console.WriteLine("Enter Lastname");
-            string inputLastname = Console.ReadLine();
-
+            string inputFirstName = "";
+            string inputLastName = "";
             string inputPersonalNumber = "";
+
+            while (!loop)
+            {
+                Console.WriteLine("Enter New Employees Firstname");
+                inputFirstName = Console.ReadLine();
+                loop = Utilities.ValidateString(inputFirstName);
+                if (!loop) Console.WriteLine("Only letters are accepted ");
+            }
+            loop = false;
+            while (!loop)
+            {
+                Console.WriteLine("Enter Lastname");
+                inputLastName = Console.ReadLine();
+                loop = Utilities.ValidateString(inputLastName);
+                if (!loop) Console.WriteLine("Only letters are accepted");
+            }
+            loop = false;
+
             while (!loop)
             {
                 Console.WriteLine("Enter PersonalNumber (YYYYMMDD-XXXX)");
                 inputPersonalNumber = Console.ReadLine();
-                loop = ValidatePersonalNumber(inputPersonalNumber);
+                loop = Utilities.ValidatePersonalNumber(inputPersonalNumber);
                 if (!loop)
                 {
                     Console.WriteLine("Wrong Format, try again ");
@@ -110,23 +124,12 @@ namespace SchoolSystem
                 Console.Write("Try again.. ");
             }
 
-            string inputHired = "";
-            while (!loop)
-            {
-                Console.WriteLine("Enter HiredDate (YYYY-MM-DD)");
-                inputHired = Console.ReadLine();
-                loop = ValidateDateFormat(inputHired);
+            Console.WriteLine("Enter HiredDate (YYYY-MM-DD)");
+            string inputHired = Console.ReadLine();
 
-                if (!loop)
-                {
-                    Console.WriteLine("Wrong Format, try again ");
-                }
-            }
-            //Parse to DateTime then save as Date without time.
-            DateTime.TryParse(inputHired, out DateTime parsedHired);
-            parsedHired = parsedHired.Date;
-
+            DateTime parsedHired = Utilities.ValidateDateFormat(inputHired);
             Console.Clear();
+            //This is now hardcoded - should be info from db
             Console.WriteLine("Enter Position for new Employee");
             Console.WriteLine("1 for Teacher\n2 for Principal\n3 for Administration\n4 for Janitor");
             int position;
@@ -145,7 +148,7 @@ namespace SchoolSystem
             Employee emp = new()
             {
                 FirstName = inputFirstName,
-                LastName = inputLastname,
+                LastName = inputLastName,
                 PersonalNumber = inputPersonalNumber,
                 Salary = inputSalary,
                 HiredDate = parsedHired,
@@ -154,15 +157,6 @@ namespace SchoolSystem
             };
             return emp;
         }
-        private bool ValidatePersonalNumber(string input)
-        {
-            string pattern = @"^\d{8}-\d{4}$";
-            return Regex.IsMatch(input, pattern);
-        }
-        private bool ValidateDateFormat(string input)
-        {
-            string pattern = @"^\d{4}-\d{2}-\d{2}$";
-            return Regex.IsMatch(input, pattern);
-        }
+
     }
 }

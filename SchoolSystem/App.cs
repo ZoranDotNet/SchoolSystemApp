@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Text;
 
 namespace SchoolSystem
@@ -30,11 +31,21 @@ namespace SchoolSystem
                         break;
 
                     case 2:
+                        dbContext.GetStudents();
+                        Console.ReadKey();
                         break;
 
                     case 3:
                         ado.AddEmployee();
                         Console.ReadKey();
+                        break;
+
+                    case 4:
+                        dbContext.AddStudent();
+                        Console.ReadKey();
+                        break;
+
+                    case 5:
                         break;
                 }
             }
@@ -77,11 +88,10 @@ namespace SchoolSystem
                     case ConsoleKey.Enter:
                         isSelected = true;
                         break;
-                        return option;
                 }
             }
             Console.WriteLine($"\n{decorator} {option}\u001b[0m");
-
+            Console.CursorVisible = true;
             return option;
         }
     }
