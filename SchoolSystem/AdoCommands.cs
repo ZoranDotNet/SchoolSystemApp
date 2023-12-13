@@ -157,6 +157,84 @@ namespace SchoolSystem
             };
             return emp;
         }
+        public void PayrollStats()
+        {
+            Console.WriteLine("1 for Total salary per Department");
+            Console.WriteLine("2 for Average salary per Department");
+            int option;
+            while (!int.TryParse(Console.ReadLine(), out option) || option < 0 || option > 2)
+            {
+                Console.WriteLine("Only 1 & 2 are valid here.");
+            }
+
+            if (option == 1)
+            {
+                Console.Clear();
+                PayrollTotal();
+            }
+            else
+            {
+                Console.Clear();
+                PayrollAverage();
+            }
+
+        }
+        public void PayrollTotal()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("SELECT d.DepartmentName, SUM(e.Salary) AS [Per Month] from Employee e " +
+                        "join Department d on d.DepartmentId = e.FK_DepartmentId group by d.DepartmentName", connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            Console.WriteLine("Department   Total/Month");
+                            Console.WriteLine("************************");
+                            while (reader.Read())
+                            {
+                                Console.WriteLine($"{reader["DepartmentName"]}   {reader["Per Month"]}");
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+        }
+        public void PayrollAverage()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("SELECT d.DepartmentName, AVG(e.Salary) AS [Avg per Month] from Employee e " +
+                        "join Department d on d.DepartmentId = e.FK_DepartmentId group by d.DepartmentName", connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            Console.WriteLine("Depertment       Avg per Month");
+                            Console.WriteLine("******************************");
+                            while (reader.Read())
+                            {
+                                Console.WriteLine($"{reader["DepartmentName"]} {reader["Avg per Month"]}");
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+        }
 
     }
 }
