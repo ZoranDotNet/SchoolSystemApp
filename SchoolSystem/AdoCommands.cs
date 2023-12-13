@@ -214,7 +214,7 @@ namespace SchoolSystem
                 try
                 {
                     connection.Open();
-                    using (SqlCommand command = new SqlCommand("SELECT d.DepartmentName, AVG(e.Salary) AS [Avg per Month] from Employee e " +
+                    using (SqlCommand command = new SqlCommand("SELECT d.DepartmentName, CAST(AVG(e.Salary)AS INT) AS [Avg per Month] from Employee e " +
                         "join Department d on d.DepartmentId = e.FK_DepartmentId group by d.DepartmentName", connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
