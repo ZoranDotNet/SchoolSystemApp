@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Text;
 
 namespace SchoolSystem
@@ -30,6 +31,8 @@ namespace SchoolSystem
                         break;
 
                     case 2:
+                        dbContext.GetStudents();
+                        Console.ReadKey();
                         break;
 
                     case 3:

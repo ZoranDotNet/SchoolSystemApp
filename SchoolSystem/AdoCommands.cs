@@ -86,12 +86,27 @@ namespace SchoolSystem
         private Employee Enteremployee()
         {
             bool loop = false;
-            Console.WriteLine("Enter New Employees Firstname");
-            string inputFirstName = Console.ReadLine();
-            Console.WriteLine("Enter Lastname");
-            string inputLastname = Console.ReadLine();
-
+            string inputFirstName = "";
+            string inputLastName = "";
             string inputPersonalNumber = "";
+
+            while (!loop)
+            {
+                Console.WriteLine("Enter New Employees Firstname");
+                inputFirstName = Console.ReadLine();
+                loop = ValidateString(inputFirstName);
+                if (!loop) Console.WriteLine("Only letters are accepted ");
+            }
+
+            while (!loop)
+            {
+                Console.WriteLine("Enter Lastname");
+                inputLastName = Console.ReadLine();
+                loop = ValidateString(inputLastName);
+                if (!loop) Console.WriteLine("Only letters are accepted");
+            }
+
+
             while (!loop)
             {
                 Console.WriteLine("Enter PersonalNumber (YYYYMMDD-XXXX)");
@@ -135,7 +150,7 @@ namespace SchoolSystem
             Employee emp = new()
             {
                 FirstName = inputFirstName,
-                LastName = inputLastname,
+                LastName = inputLastName,
                 PersonalNumber = inputPersonalNumber,
                 Salary = inputSalary,
                 HiredDate = parsedHired,
@@ -143,6 +158,11 @@ namespace SchoolSystem
                 FkDepartment = department
             };
             return emp;
+        }
+        private bool ValidateString(string input)
+        {
+            string pattern = @"^[a-zA-Z]+$";
+            return Regex.IsMatch(input, pattern);
         }
         private bool ValidatePersonalNumber(string input)
         {
