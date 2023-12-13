@@ -1,7 +1,5 @@
 ﻿using SchoolSystem.Models;
 using System.Data.SqlClient;
-using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace SchoolSystem
 {
@@ -66,7 +64,7 @@ namespace SchoolSystem
                         int rows = cmd.ExecuteNonQuery();
                         if (rows > 0)
                         {
-                            Console.WriteLine($"New Employee added to Db");
+                            Console.WriteLine($"New Employee added to system");
                         }
                         else
                         {
@@ -94,24 +92,24 @@ namespace SchoolSystem
             {
                 Console.WriteLine("Enter New Employees Firstname");
                 inputFirstName = Console.ReadLine();
-                loop = ValidateString(inputFirstName);
+                loop = Utilities.ValidateString(inputFirstName);
                 if (!loop) Console.WriteLine("Only letters are accepted ");
             }
-
+            loop = false;
             while (!loop)
             {
                 Console.WriteLine("Enter Lastname");
                 inputLastName = Console.ReadLine();
-                loop = ValidateString(inputLastName);
+                loop = Utilities.ValidateString(inputLastName);
                 if (!loop) Console.WriteLine("Only letters are accepted");
             }
-
+            loop = false;
 
             while (!loop)
             {
                 Console.WriteLine("Enter PersonalNumber (YYYYMMDD-XXXX)");
                 inputPersonalNumber = Console.ReadLine();
-                loop = ValidatePersonalNumber(inputPersonalNumber);
+                loop = Utilities.ValidatePersonalNumber(inputPersonalNumber);
                 if (!loop)
                 {
                     Console.WriteLine("Wrong Format, try again ");
@@ -129,9 +127,9 @@ namespace SchoolSystem
             Console.WriteLine("Enter HiredDate (YYYY-MM-DD)");
             string inputHired = Console.ReadLine();
 
-            DateTime parsedHired = ValidateDateFormat(inputHired);
+            DateTime parsedHired = Utilities.ValidateDateFormat(inputHired);
             Console.Clear();
-
+            //This is now hardcoded - should be info from db
             Console.WriteLine("Enter Position for new Employee");
             Console.WriteLine("1 for Teacher\n2 for Principal\n3 for Administration\n4 for Janitor");
             int position;
@@ -159,32 +157,6 @@ namespace SchoolSystem
             };
             return emp;
         }
-        private bool ValidateString(string input)
-        {
-            string pattern = @"^[a-zA-Z]+$";
-            return Regex.IsMatch(input, pattern);
-        }
-        private bool ValidatePersonalNumber(string input)
-        {
-            string pattern = @"^\d{8}-\d{4}$";
-            return Regex.IsMatch(input, pattern);
-        }
-        private DateTime ValidateDateFormat(string input)
-        {
-            DateTime parsedHired;
-            while (true)
-            {
-                if (DateTime.TryParseExact(input, "yyyy-mm-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedHired))
-                {
-                    parsedHired = parsedHired.Date;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Date Format. Try again. (YYYY-MM-DD");
-                }
-            }
-            return parsedHired;
-        }
+
     }
 }
