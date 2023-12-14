@@ -267,7 +267,7 @@ namespace SchoolSystem
                                 using (SqlDataReader reader = cmd.ExecuteReader())
                                 {
                                     Console.WriteLine("Student is assigned to these courses");
-                                    Console.WriteLine("   Name     * Course * Start  *     End  *      Grade *   GradeDate");
+                                    Console.WriteLine("*  Name  *  Course  *  Start  *  End  *  Grade  *  GradeDate");
                                     while (reader.Read())
                                     {
                                         //Need this to get just the date without time
