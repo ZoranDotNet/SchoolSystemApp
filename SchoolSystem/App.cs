@@ -46,6 +46,11 @@ namespace SchoolSystem
                         break;
 
                     case 5:
+                        ado.StudentCourseInfo();
+                        Console.ReadKey();
+                        break;
+
+                    case 6:
                         ado.PayrollStats();
                         Console.ReadKey();
                         break;
@@ -74,18 +79,19 @@ namespace SchoolSystem
                 Console.WriteLine($"{(option == 2 ? decorator : "   ")}2 All Students\u001b[34m");
                 Console.WriteLine($"{(option == 3 ? decorator : "   ")}3 Add New Employee\u001b[34m");
                 Console.WriteLine($"{(option == 4 ? decorator : "   ")}4 Add New Student\u001b[34m");
-                Console.WriteLine($"{(option == 5 ? decorator : "   ")}5 Payroll Statistics\u001b[34m");
+                Console.WriteLine($"{(option == 5 ? decorator : "   ")}5 Student Course Info\u001b[34m");
+                Console.WriteLine($"{(option == 6 ? decorator : "   ")}6 Payroll Statistics\u001b[34m");
 
                 key = Console.ReadKey(false);
 
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        option = option == 1 ? 5 : option - 1;
+                        option = option == 1 ? 6 : option - 1;
                         break;
 
                     case ConsoleKey.DownArrow:
-                        option = option == 5 ? 1 : option + 1;
+                        option = option == 6 ? 1 : option + 1;
                         break;
 
                     case ConsoleKey.Enter:

@@ -235,6 +235,66 @@ namespace SchoolSystem
                 }
             }
         }
+        public void StudentCourseInfo()
+        {
+            Console.WriteLine("Wich Student do you seek info for. Enter Firstname");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter Lastname");
+            string lastName = Console.ReadLine();
+            Console.Clear();
+
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("SELECT StudentId FROM Student where FirstName = @firstName and LastName = @lastName", connection))
+                    {
+                        command.Parameters.AddWithValue("@firstName", firstName);
+                        command.Parameters.AddWithValue("@lastName", lastName);
+
+                        var result = command.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            int stId = Convert.ToInt32(result);
+
+                            using (SqlCommand cmd = new SqlCommand("Exec spStudentCourseInfo @id", connection))
+                            {
+                                cmd.Parameters.AddWithValue("@id", stId);
+
+                                using (SqlDataReader reader = cmd.ExecuteReader())
+                                {
+                                    Console.WriteLine("Student is assigned to these courses");
+                                    Console.WriteLine("   Name     * Course * Start  *     End  *      Grade *   GradeDate");
+                                    while (reader.Read())
+                                    {
+                                        //Need this to get just the date without time
+                                        string start = ((DateTime)reader["StartDate"]).ToString("yyyy-MM-dd");
+                                        string end = ((DateTime)reader["EndDate"]).ToString("yyyy-MM-dd");
+
+                                        Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["Course"]} * {start} * {end}      {reader["Grade"]}       {reader["GradeDate"]}");
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not find the Student");
+                        }
+
+
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+        }
 
     }
 }
