@@ -119,9 +119,9 @@ namespace SchoolSystem
                 var activeCourses = dbContext.Courses.Where(c => c.StartDate <= DateOnly.FromDateTime(DateTime.Now)).Where(x => x.EndDate >= DateOnly.FromDateTime(DateTime.Now)).ToList();
 
                 Console.WriteLine("CourseName | Start | End ");
-                foreach (var c in activeCourses)
+                foreach (var course in activeCourses)
                 {
-                    Console.WriteLine($"{c.CourseName} {c.StartDate} - {c.EndDate}");
+                    Console.WriteLine($"{course.CourseName} * {course.StartDate} -- {course.EndDate}");
                 }
             }
         }

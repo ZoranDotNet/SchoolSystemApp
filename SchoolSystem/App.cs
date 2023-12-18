@@ -59,6 +59,11 @@ namespace SchoolSystem
                         dbContext.ActiveCourses();
                         Console.ReadKey();
                         break;
+
+                    case 8:
+                        ado.TeacherInfo();
+                        Console.ReadKey();
+                        break;
                 }
             }
         }
@@ -87,17 +92,18 @@ namespace SchoolSystem
                 Console.WriteLine($"{(option == 5 ? decorator : "   ")}5 Student Course Info\u001b[34m");
                 Console.WriteLine($"{(option == 6 ? decorator : "   ")}6 Payroll Statistics\u001b[34m");
                 Console.WriteLine($"{(option == 7 ? decorator : "   ")}7 Show Active Courses\u001b[34m");
+                Console.WriteLine($"{(option == 8 ? decorator : "   ")}8 Show Teachers / Courses\u001b[34m");
 
                 key = Console.ReadKey(false);
 
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        option = option == 1 ? 7 : option - 1;
+                        option = option == 1 ? 8 : option - 1;
                         break;
 
                     case ConsoleKey.DownArrow:
-                        option = option == 7 ? 1 : option + 1;
+                        option = option == 8 ? 1 : option + 1;
                         break;
 
                     case ConsoleKey.Enter:

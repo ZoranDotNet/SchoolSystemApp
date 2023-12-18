@@ -295,6 +295,33 @@ namespace SchoolSystem
                 }
             }
         }
+        public void TeacherInfo()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand cmd = new SqlCommand("Select * from ViewTeacherCourses", connection))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["CourseName"]} - {reader["DepartmentName"]}");
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("Error: " + e.Message);
+                }
+
+            }
+        }
 
     }
 }
