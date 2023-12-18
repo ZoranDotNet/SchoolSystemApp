@@ -445,7 +445,7 @@ namespace SchoolSystem
             Console.ReadKey();
             int courseId = GetCourseId();
             TeacherInfo();
-            Console.WriteLine("Wich Teacher is setting the Grade");
+            Console.WriteLine("\nWich Teacher is setting the Grade");
             int employeeId = GetEmployeeId();
             Console.WriteLine("What grade 1-5");
             int grade;
@@ -459,11 +459,15 @@ namespace SchoolSystem
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                SqlTransaction transaction = null;
                 try
                 {
                     connection.Open();
+                    transaction = connection.BeginTransaction();
+
                     string query = @"Insert into Grade (GradeValue, GradeDate, FK_StudentId, FK_CourseId, FK_EmployeeId) 
                             Values (@grade, Cast(@date as Date), @fkStudent, @fkCourse, @fkEmployee)";
+
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@grade", grade);
@@ -476,6 +480,7 @@ namespace SchoolSystem
                         if (rows > 0)
                         {
                             Console.WriteLine($"New Grade registred");
+                            transaction.Commit();
                         }
                         else
                         {
@@ -486,8 +491,12 @@ namespace SchoolSystem
                 }
                 catch (Exception e)
                 {
-
                     Console.WriteLine("Error: " + e.Message);
+
+                    if (transaction != null)
+                    {
+                        transaction.Rollback();
+                    }
                 }
             }
         }
