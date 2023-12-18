@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SchoolSystem.Models;
+﻿namespace SchoolSystem.Models;
 
 public partial class Grade
 {
@@ -14,6 +11,8 @@ public partial class Grade
     public int? FkStudentId { get; set; }
 
     public int? FkCourseId { get; set; }
+    public int? FkEmployeeId { get; set; }
+    public virtual Employee? FkEmployee { get; set; }
 
     public virtual Course? FkCourse { get; set; }
 

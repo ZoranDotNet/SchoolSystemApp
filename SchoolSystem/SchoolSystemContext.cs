@@ -13,7 +13,6 @@ namespace SchoolSystem
             this.configuration = configuration;
         }
 
-
         public void GetStudents()
         {
             using (var dbContext = new SchoolSystemContext(configuration))
@@ -22,7 +21,7 @@ namespace SchoolSystem
 
                 foreach (Student s in allStudents)
                 {
-                    Console.WriteLine($"{s.FirstName} {s.LastName} {s.EmailAdress} {s.PersonalNumber} {s.FkSchoolClass?.ClassName}");
+                    Console.WriteLine($"{s.FirstName} {s.LastName} * {s.EmailAdress} * {s.PersonalNumber} {s.FkSchoolClass?.ClassName}");
                 }
             }
         }
@@ -111,6 +110,38 @@ namespace SchoolSystem
             };
             Console.Clear();
             return st;
+        }
+        public void ListActiveCourses()
+        {
+            using (var dbContext = new SchoolSystemContext(configuration))
+            {
+                var activeCourses = dbContext.Courses.Where(c => c.StartDate <= DateOnly.FromDateTime(DateTime.Now)).Where(x => x.EndDate >= DateOnly.FromDateTime(DateTime.Now)).ToList();
+
+                Console.WriteLine("CourseName | Start | End ");
+                foreach (var course in activeCourses)
+                {
+                    Console.WriteLine($"{course.CourseName} * {course.StartDate} -- {course.EndDate}");
+                }
+            }
+        }
+        public void EmployeePerDepartment()
+        {
+            using (var dbContext = new SchoolSystemContext(configuration))
+            {
+                var nrOfEmployees = dbContext.Departments.Include(e => e.Employees).Select(x => new
+                {
+                    DepartmentName = x.DepartmentName,
+                    EmployeesCount = x.Employees.Count()
+                })
+                .ToList();
+
+                Console.WriteLine("Department |  NrEmployee");
+                Console.WriteLine("************************");
+                foreach (var department in nrOfEmployees)
+                {
+                    Console.WriteLine($"{department.DepartmentName}: {department.EmployeesCount}");
+                }
+            }
         }
     }
 }

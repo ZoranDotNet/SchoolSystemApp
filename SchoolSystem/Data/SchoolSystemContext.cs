@@ -92,8 +92,8 @@ public partial class SchoolSystemContext : DbContext
             entity.ToTable("Employee");
 
             entity.Property(e => e.FirstName).HasMaxLength(50);
-            entity.Property(e => e.FkDepartment).HasColumnName("FK_Department");
-            entity.Property(e => e.FkPosition).HasColumnName("FK_Position");
+            entity.Property(e => e.FkDepartment).HasColumnName("FK_DepartmentId");
+            entity.Property(e => e.FkPosition).HasColumnName("FK_PositionId");
             entity.Property(e => e.LastName).HasMaxLength(50);
             entity.Property(e => e.PersonalNumber)
                 .HasMaxLength(13)
@@ -115,6 +115,7 @@ public partial class SchoolSystemContext : DbContext
 
             entity.Property(e => e.FkCourseId).HasColumnName("FK_CourseId");
             entity.Property(e => e.FkStudentId).HasColumnName("FK_StudentId");
+            entity.Property(e => e.FkEmployeeId).HasColumnName("FK_EmployeeId");
 
             entity.HasOne(d => d.FkCourse).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.FkCourseId)
@@ -123,6 +124,10 @@ public partial class SchoolSystemContext : DbContext
             entity.HasOne(d => d.FkStudent).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.FkStudentId)
                 .HasConstraintName("FK_Grade_Student");
+
+            entity.HasOne(d => d.FkEmployee).WithMany(p => p.Grades)
+                .HasForeignKey(d => d.FkEmployeeId)
+                .HasConstraintName("FK_Grade_Employee");
         });
 
         modelBuilder.Entity<Position>(entity =>
