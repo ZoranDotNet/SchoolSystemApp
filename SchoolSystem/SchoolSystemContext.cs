@@ -125,5 +125,24 @@ namespace SchoolSystem
                 }
             }
         }
+        public void EmployeePerDepartment()
+        {
+            using (var dbContext = new SchoolSystemContext(configuration))
+            {
+                var nrOfEmployees = dbContext.Departments.Include(e => e.Employees).Select(x => new
+                {
+                    DepartmentName = x.DepartmentName,
+                    EmployeesCount = x.Employees.Count()
+                })
+                .ToList();
+
+                Console.WriteLine("Department   NrEmployee");
+                Console.WriteLine("***********************");
+                foreach (var department in nrOfEmployees)
+                {
+                    Console.WriteLine($"{department.DepartmentName} {department.EmployeesCount}");
+                }
+            }
+        }
     }
 }
