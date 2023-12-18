@@ -115,6 +115,7 @@ public partial class SchoolSystemContext : DbContext
 
             entity.Property(e => e.FkCourseId).HasColumnName("FK_CourseId");
             entity.Property(e => e.FkStudentId).HasColumnName("FK_StudentId");
+            entity.Property(e => e.FkEmployeeId).HasColumnName("FK_EmployeeId");
 
             entity.HasOne(d => d.FkCourse).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.FkCourseId)
@@ -123,6 +124,10 @@ public partial class SchoolSystemContext : DbContext
             entity.HasOne(d => d.FkStudent).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.FkStudentId)
                 .HasConstraintName("FK_Grade_Student");
+
+            entity.HasOne(d => d.FkEmployee).WithMany(p => p.Grades)
+                .HasForeignKey(d => d.FkEmployeeId)
+                .HasConstraintName("FK_Grade_Employee");
         });
 
         modelBuilder.Entity<Position>(entity =>

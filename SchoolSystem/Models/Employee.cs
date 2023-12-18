@@ -25,4 +25,6 @@ public partial class Employee
     public virtual Department? FkDepartmentNavigation { get; set; }
 
     public virtual Position? FkPositionNavigation { get; set; }
+
+    public virtual ICollection<Grade> Grades { get; set; } = new List<Grade>();
 }
