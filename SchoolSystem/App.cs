@@ -56,7 +56,7 @@ namespace SchoolSystem
                         break;
 
                     case 7:
-                        dbContext.ActiveCourses();
+                        dbContext.ListActiveCourses();
                         Console.ReadKey();
                         break;
 

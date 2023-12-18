@@ -235,7 +235,41 @@ namespace SchoolSystem
                 }
             }
         }
+        private int GetEmployeeId()
+        {
+            Console.WriteLine("Enter Firstname");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter Lastname");
+            string lastName = Console.ReadLine();
+            Console.Clear();
 
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("SELECT EmployeeId FROM Employee where FirstName = @firstName and LastName = @lastName", connection))
+                    {
+                        command.Parameters.AddWithValue("@firstName", firstName);
+                        command.Parameters.AddWithValue("@lastName", lastName);
+
+                        var result = command.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            return (int)result;
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("Error: " + e.Message);
+                }
+                return -1;
+            }
+        }
         private int GetStudentId()
         {
             Console.WriteLine("Wich Student, enter Firstname");
@@ -275,7 +309,7 @@ namespace SchoolSystem
         private int GetCourseId()
         {
             Console.Clear();
-            Console.WriteLine("Wich Course");
+            Console.WriteLine("Wich Course do you wish to Grade");
             string course = Console.ReadLine();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -305,56 +339,39 @@ namespace SchoolSystem
         }
         public void StudentCourseInfo()
         {
-            Console.WriteLine("Wich Student do you seek info for. Enter Firstname");
-            string firstName = Console.ReadLine();
-            Console.WriteLine("Enter Lastname");
-            string lastName = Console.ReadLine();
-            Console.Clear();
-
+            int studentId = GetStudentId();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("SELECT StudentId FROM Student where FirstName = @firstName and LastName = @lastName", connection))
+                    if (studentId > 0)
                     {
-                        command.Parameters.AddWithValue("@firstName", firstName);
-                        command.Parameters.AddWithValue("@lastName", lastName);
-
-                        var result = command.ExecuteScalar();
-
-                        if (result != null)
+                        connection.Open();
+                        using (SqlCommand command = new SqlCommand("Exec spStudentCourseInfo @id", connection))
                         {
-                            int stId = Convert.ToInt32(result);
+                            command.Parameters.AddWithValue("@id", studentId);
 
-                            using (SqlCommand cmd = new SqlCommand("Exec spStudentCourseInfo @id", connection))
+                            using (SqlDataReader reader = command.ExecuteReader())
                             {
-                                cmd.Parameters.AddWithValue("@id", stId);
-
-                                using (SqlDataReader reader = cmd.ExecuteReader())
+                                Console.WriteLine("Student is assigned to these courses");
+                                Console.WriteLine("*  Name  *  Course  *  Start  *  End  *  Grade  *  GradeDate");
+                                while (reader.Read())
                                 {
-                                    Console.WriteLine("Student is assigned to these courses");
-                                    Console.WriteLine("*  Name  *  Course  *  Start  *  End  *  Grade  *  GradeDate");
-                                    while (reader.Read())
-                                    {
-                                        //Need this to get just the date without time
-                                        string start = ((DateTime)reader["StartDate"]).ToString("yyyy-MM-dd");
-                                        string end = ((DateTime)reader["EndDate"]).ToString("yyyy-MM-dd");
+                                    //Need this to get just the date without time
+                                    string start = ((DateTime)reader["StartDate"]).ToString("yyyy-MM-dd");
+                                    string end = ((DateTime)reader["EndDate"]).ToString("yyyy-MM-dd");
 
-                                        Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["Course"]} * {start} * {end}      {reader["Grade"]}       {reader["GradeDate"]}");
-                                    }
+                                    Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["Course"]} * {start} * {end}      {reader["Grade"]}       {reader["GradeDate"]}");
                                 }
                             }
                         }
-                        else
-                        {
-                            Console.WriteLine("Could not find the Student");
-                        }
-
-
+                        connection.Close();
                     }
-                    connection.Close();
+                    else
+                    {
+                        Console.WriteLine("Could not find the Student");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -422,29 +439,48 @@ namespace SchoolSystem
                 }
             }
         }
-
         public void SetGrade()
         {
             int studentId = ListCoursesWithNoGrade();
+            Console.ReadKey();
             int courseId = GetCourseId();
-            Console.WriteLine("Grade wich course");
-            string courseName = Console.ReadLine();
+            TeacherInfo();
+            Console.WriteLine("Wich Teacher is setting the Grade");
+            int employeeId = GetEmployeeId();
             Console.WriteLine("What grade 1-5");
             int grade;
             while (!int.TryParse(Console.ReadLine(), out grade) || grade < 1 || grade > 5)
             {
                 Console.WriteLine("Try again, 1-5 valid numbers");
             }
+            Console.WriteLine("Enter GradeDate (YYYY-MM-DD)");
+            string gradeDate = Console.ReadLine();
+            DateTime parsedGradeDate = Utilities.ValidateDateFormat(gradeDate);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    string query = @"";
+                    string query = @"Insert into Grade (GradeValue, GradeDate, FK_StudentId, FK_CourseId, FK_EmployeeId) 
+                            Values (@grade, Cast(@date as Date), @fkStudent, @fkCourse, @fkEmployee)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@grade", grade);
+                        command.Parameters.AddWithValue("@date", parsedGradeDate);
+                        command.Parameters.AddWithValue("@fkStudent", studentId);
+                        command.Parameters.AddWithValue("@fkCourse", courseId);
+                        command.Parameters.AddWithValue("@fkEmployee", employeeId);
 
+                        int rows = command.ExecuteNonQuery();
+                        if (rows > 0)
+                        {
+                            Console.WriteLine($"New Grade registred");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Something went wrong");
+                        }
                     }
                     connection.Close();
                 }
@@ -477,10 +513,11 @@ namespace SchoolSystem
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             Console.WriteLine("Finished courses with Grade not set yet");
+                            Console.WriteLine("Name  |  Course  | EndDate");
                             while (reader.Read())
                             {
                                 string endDate = ((DateTime)reader["EndDate"]).ToString("yyyy-MM-dd");
-                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} {reader["CourseName"]} {endDate}");
+                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["CourseName"]} {endDate}");
                             }
                         }
                     }

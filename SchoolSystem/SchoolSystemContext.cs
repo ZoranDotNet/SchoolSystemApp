@@ -13,7 +13,6 @@ namespace SchoolSystem
             this.configuration = configuration;
         }
 
-
         public void GetStudents()
         {
             using (var dbContext = new SchoolSystemContext(configuration))
@@ -112,7 +111,7 @@ namespace SchoolSystem
             Console.Clear();
             return st;
         }
-        public void ActiveCourses()
+        public void ListActiveCourses()
         {
             using (var dbContext = new SchoolSystemContext(configuration))
             {
