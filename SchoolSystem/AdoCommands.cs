@@ -179,7 +179,7 @@ namespace SchoolSystem
             }
 
         }
-        public void PayrollTotal()
+        private void PayrollTotal()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -207,7 +207,7 @@ namespace SchoolSystem
                 }
             }
         }
-        public void PayrollAverage()
+        private void PayrollAverage()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -233,6 +233,74 @@ namespace SchoolSystem
                 {
                     Console.WriteLine("Error: " + e.Message);
                 }
+            }
+        }
+
+        private int GetStudentId()
+        {
+            Console.WriteLine("Wich Student, enter Firstname");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter Lastname");
+            string lastName = Console.ReadLine();
+            Console.Clear();
+
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("SELECT StudentId FROM Student where FirstName = @firstName and LastName = @lastName", connection))
+                    {
+                        command.Parameters.AddWithValue("@firstName", firstName);
+                        command.Parameters.AddWithValue("@lastName", lastName);
+
+                        var result = command.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            return (int)result;
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("Error: " + e.Message);
+                }
+                return -1;
+            }
+        }
+        private int GetCourseId()
+        {
+            Console.Clear();
+            Console.WriteLine("Wich Course");
+            string course = Console.ReadLine();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("Select CourseId from Course where CourseName = @courseName", connection))
+                    {
+                        command.Parameters.AddWithValue("@courseName", course);
+
+                        var result = command.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            return (int)result;
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error: " + e.Message);
+                }
+                return -1;
             }
         }
         public void StudentCourseInfo()
@@ -321,6 +389,110 @@ namespace SchoolSystem
                 }
 
             }
+        }
+        public void DeleteStudent()
+        {
+            int id = GetStudentId();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    if (id > 0)
+                    {
+                        connection.Open();
+                        using (SqlCommand command = new SqlCommand("Exec spDeleteStudent @id", connection))
+                        {
+                            command.Parameters.AddWithValue("@id", id);
+
+                            command.ExecuteNonQuery();
+                            Console.WriteLine("Student deleted");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Could not find the Student");
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+        }
+
+        public void SetGrade()
+        {
+            int studentId = ListCoursesWithNoGrade();
+            int courseId = GetCourseId();
+            Console.WriteLine("Grade wich course");
+            string courseName = Console.ReadLine();
+            Console.WriteLine("What grade 1-5");
+            int grade;
+            while (!int.TryParse(Console.ReadLine(), out grade) || grade < 1 || grade > 5)
+            {
+                Console.WriteLine("Try again, 1-5 valid numbers");
+            }
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = @"";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+        }
+        private int ListCoursesWithNoGrade()
+        {
+            int id = GetStudentId();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    string query = @"
+                            Select s.FirstName, s.LastName, c.CourseName, c.EndDate 
+                            From Course c
+                            join StudentCourse sc on sc.FK_CourseId = c.CourseId
+                            join Student s on s.StudentId = sc.FK_StudentId and s.StudentId = @id
+                            left join Grade g on g.FK_CourseId = c.CourseId
+                            Where c.EndDate < GetDate() and g.GradeValue IS NULL";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", id);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            Console.WriteLine("Finished courses with Grade not set yet");
+                            while (reader.Read())
+                            {
+                                string endDate = ((DateTime)reader["EndDate"]).ToString("yyyy-MM-dd");
+                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} {reader["CourseName"]} {endDate}");
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine("Error: " + e.Message);
+                }
+            }
+            return id;
         }
 
     }

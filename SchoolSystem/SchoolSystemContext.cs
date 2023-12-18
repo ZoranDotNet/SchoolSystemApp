@@ -136,11 +136,11 @@ namespace SchoolSystem
                 })
                 .ToList();
 
-                Console.WriteLine("Department   NrEmployee");
-                Console.WriteLine("***********************");
+                Console.WriteLine("Department |  NrEmployee");
+                Console.WriteLine("************************");
                 foreach (var department in nrOfEmployees)
                 {
-                    Console.WriteLine($"{department.DepartmentName} {department.EmployeesCount}");
+                    Console.WriteLine($"{department.DepartmentName}: {department.EmployeesCount}");
                 }
             }
         }
