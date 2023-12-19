@@ -71,11 +71,16 @@ internal class App
                     break;
 
                 case 10:
-                    ado.DeleteStudent();
+                    ado.ViewGrades();
                     Console.ReadKey();
                     break;
 
                 case 11:
+                    ado.DeleteStudent();
+                    Console.ReadKey();
+                    break;
+
+                case 12:
                     loop = false;
                     break;
             }
@@ -108,19 +113,20 @@ internal class App
             Console.WriteLine($"{(option == 7 ? decorator : "   ")}7 Student Course Info\u001b[34m");
             Console.WriteLine($"{(option == 8 ? decorator : "   ")}8 Register student to Course\u001b[34m");
             Console.WriteLine($"{(option == 9 ? decorator : "   ")}9 Set Grade\u001b[34m");
-            Console.WriteLine($"{(option == 10 ? decorator : "   ")}10 Delete Student\u001b[34m");
-            Console.WriteLine($"{(option == 11 ? decorator : "   ")}11 Exit\u001b[34m");
+            Console.WriteLine($"{(option == 10 ? decorator : "   ")}10 View Grades\u001b[34m");
+            Console.WriteLine($"{(option == 11 ? decorator : "   ")}11 Delete Student\u001b[34m");
+            Console.WriteLine($"{(option == 12 ? decorator : "   ")}12 Exit\u001b[34m");
 
             key = Console.ReadKey(false);
 
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    option = option == 1 ? 11 : option - 1;
+                    option = option == 1 ? 12 : option - 1;
                     break;
 
                 case ConsoleKey.DownArrow:
-                    option = option == 11 ? 1 : option + 1;
+                    option = option == 12 ? 1 : option + 1;
                     break;
 
                 case ConsoleKey.Enter:

@@ -46,7 +46,7 @@ public partial class SchoolSystemContext : DbContext
 
             foreach (Student s in allStudents)
             {
-                Console.WriteLine($"{s.FirstName} {s.LastName} * {s.EmailAdress} * {s.PersonalNumber} {s.FkSchoolClass?.ClassName}");
+                Console.WriteLine($"{s.FirstName} {s.LastName} * {s.EmailAdress} * {s.PersonalNumber} * {s.FkSchoolClass?.ClassName}");
             }
         }
     }

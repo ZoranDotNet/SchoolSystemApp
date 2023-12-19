@@ -14,10 +14,9 @@ internal class AdoCommands
     public void EmployeeOptions()
     {
         Console.WriteLine("1 - List all Employees");
-        Console.WriteLine("2 - List Teachers");
-        Console.WriteLine("3 - Add New Employee");
+        Console.WriteLine("2 - Add New Employee");
         int option;
-        while (!int.TryParse(Console.ReadLine(), out option) || option > 3 || option < 1)
+        while (!int.TryParse(Console.ReadLine(), out option) || option > 2 || option < 1)
         {
             Console.WriteLine("Try again");
         }
@@ -26,38 +25,9 @@ internal class AdoCommands
         {
             GetEmployees();
         }
-        else if (option == 2)
-        {
-            GetTeachers();
-        }
-        else if (option == 3)
+        else
         {
             AddEmployee();
-        }
-    }
-    public void GetTeachers()
-    {
-        using (SqlConnection connection = new SqlConnection(connectionString))
-        {
-            try
-            {
-                connection.Open();
-                using (SqlCommand command = new SqlCommand("Select * from ViewTeachers Order By CourseName", connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} - {reader["CourseName"]}");
-                        }
-                    }
-                }
-                connection.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
         }
     }
     public void GetEmployees()
@@ -593,5 +563,31 @@ internal class AdoCommands
         }
         return id;
     }
-
+    public void ViewGrades()
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            try
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("Select * from ViewGrades Order By GradeDate", connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        Console.WriteLine("StudentId | Name  | Course | Grade | Date | Teacher\n");
+                        while (reader.Read())
+                        {
+                            string date = ((DateTime)reader["GradeDate"]).ToString("yyyy-MM-dd");
+                            Console.WriteLine($"{reader["StudentId"]} {reader["FirstName"]} {reader["LastName"]} * {reader["CourseName"]} * {reader["Grade"]} * {date} - {reader["Role"]} {reader["First"]} {reader["Last"]}");
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+    }
 }
