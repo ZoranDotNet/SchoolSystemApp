@@ -2,135 +2,134 @@
 using Microsoft.Extensions.Configuration;
 using System.Text;
 
-namespace SchoolSystem
+namespace SchoolSystem;
+
+internal class App
 {
-    internal class App
+    private readonly SchoolSystemContext dbContext;
+    private readonly AdoCommands ado;
+
+    public App(IConfiguration configuration)
     {
-        private readonly SchoolSystemContext dbContext;
-        private readonly AdoCommands ado;
+        dbContext = new SchoolSystemContext(configuration);
+        ado = new AdoCommands(configuration.GetConnectionString("Default"));
+    }
 
-        public App(IConfiguration configuration)
+    public void Run()
+    {
+        bool loop = true;
+
+        while (loop)
         {
-            dbContext = new SchoolSystemContext(configuration);
-            ado = new AdoCommands(configuration.GetConnectionString("Default"));
-        }
+            int option = DisplayMenu();
 
-        public void Run()
-        {
-            bool loop = true;
-
-            while (loop)
+            switch (option)
             {
-                int option = DisplayMenu();
+                case 1:
+                    ado.EmployeeOptions();
+                    Console.ReadKey();
+                    break;
 
-                switch (option)
-                {
-                    case 1:
-                        ado.EmployeeOptions();
-                        Console.ReadKey();
-                        break;
+                case 2:
+                    dbContext.StudentOptions();
+                    Console.ReadKey();
+                    break;
 
-                    case 2:
-                        dbContext.StudentOptions();
-                        Console.ReadKey();
-                        break;
+                case 3:
+                    dbContext.ListActiveCourses();
+                    Console.ReadKey();
+                    break;
 
-                    case 3:
-                        dbContext.ListActiveCourses();
-                        Console.ReadKey();
-                        break;
+                case 4:
+                    ado.PayrollStats();
+                    Console.ReadKey();
+                    break;
 
-                    case 4:
-                        ado.PayrollStats();
-                        Console.ReadKey();
-                        break;
+                case 5:
+                    ado.TeacherInfo();
+                    Console.ReadKey();
+                    break;
 
-                    case 5:
-                        ado.TeacherInfo();
-                        Console.ReadKey();
-                        break;
+                case 6:
+                    dbContext.EmployeePerDepartment();
+                    Console.ReadKey();
+                    break;
 
-                    case 6:
-                        dbContext.EmployeePerDepartment();
-                        Console.ReadKey();
-                        break;
+                case 7:
+                    ado.StudentCourseInfo();
+                    Console.ReadKey();
+                    break;
 
-                    case 7:
-                        ado.StudentCourseInfo();
-                        Console.ReadKey();
-                        break;
+                case 8:
+                    dbContext.RegisterStudentToCourse();
+                    Console.ReadKey();
+                    break;
 
-                    case 8:
-                        dbContext.RegisterStudentToCourse();
-                        Console.ReadKey();
-                        break;
+                case 9:
+                    ado.SetGrade();
+                    Console.ReadKey();
+                    break;
 
-                    case 9:
-                        ado.SetGrade();
-                        Console.ReadKey();
-                        break;
+                case 10:
+                    ado.DeleteStudent();
+                    Console.ReadKey();
+                    break;
 
-                    case 10:
-                        ado.DeleteStudent();
-                        Console.ReadKey();
-                        break;
-
-                    case 11:
-                        loop = false;
-                        break;
-                }
+                case 11:
+                    loop = false;
+                    break;
             }
         }
+    }
 
-        public int DisplayMenu()
+    public int DisplayMenu()
+    {
+        Console.Clear();
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.CursorVisible = false;
+        Console.WriteLine("\nUse ⬆️  and ⬇️  to navigate and press \u001b[34mEnter/Return\u001b[0m to select:");
+        Console.WriteLine("Please make a choice\n ");
+        (int left, int top) = Console.GetCursorPosition();
+        var option = 1;
+        var decorator = "✅ \u001b[31m";
+        ConsoleKeyInfo key;
+        bool isSelected = false;
+
+        while (!isSelected)
         {
-            Console.Clear();
-            Console.OutputEncoding = Encoding.UTF8;
-            Console.CursorVisible = false;
-            Console.WriteLine("\nUse ⬆️  and ⬇️  to navigate and press \u001b[34mEnter/Return\u001b[0m to select:");
-            Console.WriteLine("Please make a choice\n ");
-            (int left, int top) = Console.GetCursorPosition();
-            var option = 1;
-            var decorator = "✅ \u001b[31m";
-            ConsoleKeyInfo key;
-            bool isSelected = false;
+            Console.SetCursorPosition(left, top);
 
-            while (!isSelected)
+            Console.WriteLine($"{(option == 1 ? decorator : "   ")}1 Employees\u001b[34m");
+            Console.WriteLine($"{(option == 2 ? decorator : "   ")}2 Students\u001b[34m");
+            Console.WriteLine($"{(option == 3 ? decorator : "   ")}3 Show Active Courses\u001b[34m");
+            Console.WriteLine($"{(option == 4 ? decorator : "   ")}4 Payroll Statistics\u001b[34m");
+            Console.WriteLine($"{(option == 5 ? decorator : "   ")}5 Show Teachers - Courses\u001b[34m");
+            Console.WriteLine($"{(option == 6 ? decorator : "   ")}6 Employees / Department\u001b[34m");
+            Console.WriteLine($"{(option == 7 ? decorator : "   ")}7 Student Course Info\u001b[34m");
+            Console.WriteLine($"{(option == 8 ? decorator : "   ")}8 Register student to Course\u001b[34m");
+            Console.WriteLine($"{(option == 9 ? decorator : "   ")}9 Set Grade\u001b[34m");
+            Console.WriteLine($"{(option == 10 ? decorator : "   ")}10 Delete Student\u001b[34m");
+            Console.WriteLine($"{(option == 11 ? decorator : "   ")}11 Exit\u001b[34m");
+
+            key = Console.ReadKey(false);
+
+            switch (key.Key)
             {
-                Console.SetCursorPosition(left, top);
+                case ConsoleKey.UpArrow:
+                    option = option == 1 ? 11 : option - 1;
+                    break;
 
-                Console.WriteLine($"{(option == 1 ? decorator : "   ")}1 Employees\u001b[34m");
-                Console.WriteLine($"{(option == 2 ? decorator : "   ")}2 Students\u001b[34m");
-                Console.WriteLine($"{(option == 3 ? decorator : "   ")}3 Show Active Courses\u001b[34m");
-                Console.WriteLine($"{(option == 4 ? decorator : "   ")}4 Payroll Statistics\u001b[34m");
-                Console.WriteLine($"{(option == 5 ? decorator : "   ")}5 Show Teachers - Courses\u001b[34m");
-                Console.WriteLine($"{(option == 6 ? decorator : "   ")}6 Employees / Department\u001b[34m");
-                Console.WriteLine($"{(option == 7 ? decorator : "   ")}7 Student Course Info\u001b[34m");
-                Console.WriteLine($"{(option == 8 ? decorator : "   ")}8 Register student to Course\u001b[34m");
-                Console.WriteLine($"{(option == 9 ? decorator : "   ")}9 Set Grade\u001b[34m");
-                Console.WriteLine($"{(option == 10 ? decorator : "   ")}10 Delete Student\u001b[34m");
-                Console.WriteLine($"{(option == 11 ? decorator : "   ")}11 Exit\u001b[34m");
+                case ConsoleKey.DownArrow:
+                    option = option == 11 ? 1 : option + 1;
+                    break;
 
-                key = Console.ReadKey(false);
-
-                switch (key.Key)
-                {
-                    case ConsoleKey.UpArrow:
-                        option = option == 1 ? 11 : option - 1;
-                        break;
-
-                    case ConsoleKey.DownArrow:
-                        option = option == 11 ? 1 : option + 1;
-                        break;
-
-                    case ConsoleKey.Enter:
-                        isSelected = true;
-                        break;
-                }
+                case ConsoleKey.Enter:
+                    isSelected = true;
+                    break;
             }
-            Console.WriteLine($"\u001b[0m");
-            Console.CursorVisible = true;
-            return option;
         }
+        Console.WriteLine($"\u001b[0m");
+        Console.CursorVisible = true;
+        return option;
     }
 }
