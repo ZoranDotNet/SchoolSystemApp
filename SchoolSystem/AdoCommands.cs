@@ -11,6 +11,25 @@ namespace SchoolSystem
             this.connectionString = connectionString;
         }
 
+        public void EmployeeOptions()
+        {
+            Console.WriteLine("1 - List all Employees");
+            Console.WriteLine("2 - Add New Employee");
+            int option;
+            while (!int.TryParse(Console.ReadLine(), out option) || option > 2 || option < 1)
+            {
+                Console.WriteLine("Try again");
+            }
+
+            if (option == 1)
+            {
+                GetEmployees();
+            }
+            else
+            {
+                AddEmployee();
+            }
+        }
         public void GetEmployees()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -308,8 +327,7 @@ namespace SchoolSystem
         }
         private int GetCourseId()
         {
-            Console.Clear();
-            Console.WriteLine("Wich Course do you wish to Grade");
+            Console.WriteLine("\nWich Course do you wish to Grade");
             string course = Console.ReadLine();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -355,7 +373,7 @@ namespace SchoolSystem
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 Console.WriteLine("Student is assigned to these courses");
-                                Console.WriteLine("*  Name  *  Course  *  Start  *  End  *  Grade  *  GradeDate");
+                                Console.WriteLine("*  Name  *  Course  *  Starts  *  Ends  *  Grade  *  GradeDate\n");
                                 while (reader.Read())
                                 {
                                     //Need this to get just the date without time
@@ -391,6 +409,7 @@ namespace SchoolSystem
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
+                            Console.WriteLine("Name   |   Course   |   Department\n");
                             while (reader.Read())
                             {
                                 Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["CourseName"]} - {reader["DepartmentName"]}");
@@ -442,10 +461,9 @@ namespace SchoolSystem
         public void SetGrade()
         {
             int studentId = ListCoursesWithNoGrade();
-            Console.ReadKey();
             int courseId = GetCourseId();
             TeacherInfo();
-            Console.WriteLine("Wich Teacher is setting the Grade");
+            Console.WriteLine("\nWich Teacher is setting the Grade");
             int employeeId = GetEmployeeId();
             Console.WriteLine("What grade 1-5");
             int grade;
@@ -459,12 +477,16 @@ namespace SchoolSystem
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                SqlTransaction transaction = null;
                 try
                 {
                     connection.Open();
+                    transaction = connection.BeginTransaction();
+
                     string query = @"Insert into Grade (GradeValue, GradeDate, FK_StudentId, FK_CourseId, FK_EmployeeId) 
                             Values (@grade, Cast(@date as Date), @fkStudent, @fkCourse, @fkEmployee)";
-                    using (SqlCommand command = new SqlCommand(query, connection))
+
+                    using (SqlCommand command = new SqlCommand(query, connection, transaction))
                     {
                         command.Parameters.AddWithValue("@grade", grade);
                         command.Parameters.AddWithValue("@date", parsedGradeDate);
@@ -476,6 +498,7 @@ namespace SchoolSystem
                         if (rows > 0)
                         {
                             Console.WriteLine($"New Grade registred");
+                            transaction.Commit();
                         }
                         else
                         {
@@ -486,8 +509,12 @@ namespace SchoolSystem
                 }
                 catch (Exception e)
                 {
-
                     Console.WriteLine("Error: " + e.Message);
+
+                    if (transaction != null)
+                    {
+                        transaction.Rollback();
+                    }
                 }
             }
         }

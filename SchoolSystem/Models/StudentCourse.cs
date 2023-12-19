@@ -2,6 +2,7 @@
 
 public partial class StudentCourse
 {
+    public int StudentCourseId { get; set; }
     public int FkCourseId { get; set; }
 
     public int FkStudentId { get; set; }
