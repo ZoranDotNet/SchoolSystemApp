@@ -31,21 +31,11 @@ namespace SchoolSystem
 
             using (SchoolSystemContext dbContext = new SchoolSystemContext(configuration))
             {
-                var allClasses = dbContext.SchoolClasses.ToList();
+                SchoolClass classes = EnterSchoolClass();
 
-                foreach (var item in allClasses)
+                if (classes != null)
                 {
-                    Console.WriteLine($"Class: {item.ClassName}");
-                }
-
-                Console.WriteLine("Wich class do you wish to register the student to");
-                string input = Console.ReadLine().ToLower();
-
-                var selectedClass = allClasses.FirstOrDefault(x => x.ClassName.ToLower() == input);
-
-                if (selectedClass != null)
-                {
-                    student.FkSchoolClass = selectedClass;
+                    student.FkSchoolClass = classes;
                 }
                 else
                 {
@@ -68,7 +58,7 @@ namespace SchoolSystem
 
             while (!loop)
             {
-                Console.WriteLine("Enter New Students Firstname");
+                Console.WriteLine("Enter Students Firstname");
                 inputFirstName = Console.ReadLine();
                 loop = Utilities.ValidateString(inputFirstName);
                 if (!loop) Console.WriteLine("Only letters are accepted ");
@@ -140,6 +130,150 @@ namespace SchoolSystem
                 foreach (var department in nrOfEmployees)
                 {
                     Console.WriteLine($"{department.DepartmentName}: {department.EmployeesCount}");
+                }
+            }
+        }
+        public void EditStudent()
+        {
+            int studentId = GetStudentId();
+
+            using (var dbContext = new SchoolSystemContext(configuration))
+            {
+                var student = dbContext.Students.Where(x => x.StudentId == studentId).FirstOrDefault();
+
+                Console.WriteLine("You can now Edit the Student");
+                Console.ReadKey();
+                if (student != null)
+                {
+                    Student editStudent = EnterStudent();
+
+                    student.FirstName = editStudent.FirstName;
+                    student.LastName = editStudent.LastName;
+                    student.EmailAdress = editStudent.EmailAdress;
+                    student.PersonalNumber = editStudent.PersonalNumber;
+                }
+                else
+                {
+                    Console.WriteLine("Could not find Student");
+                    return;
+                }
+
+                SchoolClass selectedClass = EnterSchoolClass();
+                if (selectedClass != null)
+                {
+                    student.FkSchoolClass = selectedClass;
+                }
+                else
+                {
+                    Console.WriteLine("Could not find the schoolclass");
+                    return;
+                }
+
+                dbContext.SaveChanges();
+
+            }
+        }
+        private int GetStudentId()
+        {
+            Console.WriteLine("Wich Student. Enter Firstname");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter Lastname");
+            string lastName = Console.ReadLine();
+
+            using (var context = new SchoolSystemContext(configuration))
+            {
+                var student = context.Students.Where(x => x.FirstName == firstName)
+                    .Where(x => x.LastName == lastName)
+                    .FirstOrDefault();
+
+                return student.StudentId;
+            }
+        }
+        public void RegisterStudentToCourse()
+        {
+            int id = GetStudentId();
+
+            Console.Clear();
+            Console.WriteLine("These are the Courses that are available:\n");
+            ListAvailableCourses();
+            using (var context = new SchoolSystemContext(configuration))
+            {
+                var selectedstudent = context.Students.Where(x => x.StudentId == id).FirstOrDefault();
+
+                StudentCourse sc = new StudentCourse();
+                if (selectedstudent != null)
+                {
+                    sc.FkStudentId = selectedstudent.StudentId;
+                }
+                Course selecteCourse = RegisterCourse();
+
+                if (selecteCourse != null)
+                {
+                    sc.FkCourseId = selecteCourse.CourseId;
+                }
+
+                context.StudentCourses.Add(sc);
+                context.SaveChanges();
+                Console.WriteLine("Student is now Registered");
+            }
+
+        }
+        private SchoolClass EnterSchoolClass()
+        {
+            using (var dbContext = new SchoolSystemContext(configuration))
+            {
+                var allClasses = dbContext.SchoolClasses.ToList();
+
+                foreach (var item in allClasses)
+                {
+                    Console.WriteLine($"Class: {item.ClassName}");
+                }
+
+                Console.WriteLine("Wich class do you wish to register the student to");
+                string input = Console.ReadLine().ToLower();
+
+                var selectedClass = allClasses.FirstOrDefault(x => x.ClassName.ToLower() == input);
+
+                if (selectedClass != null)
+                {
+                    return selectedClass;
+                }
+                else
+                {
+                    Console.WriteLine("Could not find the Schoolclass");
+                    return null;
+                }
+            }
+
+        }
+        private void ListAvailableCourses()
+        {
+            using (var context = new SchoolSystemContext(configuration))
+            {
+                var courses = context.Courses.Where(x => x.StartDate > DateOnly.FromDateTime(DateTime.Now)).ToList();
+
+                foreach (var course in courses)
+                {
+                    Console.WriteLine($"{course.CourseName} {course.StartDate} {course.EndDate}");
+                }
+            }
+        }
+        private Course RegisterCourse()
+        {
+            Console.WriteLine("\nWich course do you wish to register Student to");
+            string selectedCourse = Console.ReadLine();
+
+            using (var dbContext = new SchoolSystemContext(configuration))
+            {
+                if (selectedCourse != null)
+                {
+                    Course foundCourse = dbContext.Courses.Where(x => x.CourseName.ToLower() == selectedCourse.ToLower()).FirstOrDefault();
+                    return foundCourse;
+                }
+                else
+                {
+                    Console.WriteLine("Could not find the Course");
+                    return null;
                 }
             }
         }

@@ -169,7 +169,6 @@ public partial class SchoolSystemContext : DbContext
         modelBuilder.Entity<StudentCourse>(entity =>
         {
             entity
-                .HasNoKey()
                 .ToTable("StudentCourse");
 
             entity.Property(e => e.FkCourseId).HasColumnName("FK_CourseId");
