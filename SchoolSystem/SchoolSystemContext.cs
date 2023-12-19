@@ -13,6 +13,31 @@ namespace SchoolSystem
             this.configuration = configuration;
         }
 
+        public void StudentOptions()
+        {
+            Console.WriteLine("1 - List All Students");
+            Console.WriteLine("2 - Add New Student");
+            Console.WriteLine("3 - Edit Student");
+            int option;
+            while (!int.TryParse(Console.ReadLine(), out option) || option > 3 || option < 1)
+            {
+                Console.WriteLine("Try again");
+            }
+
+            if (option == 1)
+            {
+                GetStudents();
+            }
+            else if (option == 2)
+            {
+                AddStudent();
+            }
+            else if (option == 3)
+            {
+                EditStudent();
+            }
+
+        }
         public void GetStudents()
         {
             using (var dbContext = new SchoolSystemContext(configuration))
@@ -35,7 +60,7 @@ namespace SchoolSystem
 
                 if (classes != null)
                 {
-                    student.FkSchoolClass = classes;
+                    student.FkSchoolClassId = classes.SchoolClassId;
                 }
                 else
                 {
@@ -125,7 +150,7 @@ namespace SchoolSystem
                 })
                 .ToList();
 
-                Console.WriteLine("Department |  NrEmployee");
+                Console.WriteLine("Department |  Employees");
                 Console.WriteLine("************************");
                 foreach (var department in nrOfEmployees)
                 {
@@ -244,7 +269,6 @@ namespace SchoolSystem
                     return null;
                 }
             }
-
         }
         private void ListAvailableCourses()
         {

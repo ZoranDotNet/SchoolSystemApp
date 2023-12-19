@@ -5,10 +5,14 @@ namespace SchoolSystem
 {
     internal static class Utilities
     {
+        /*
+         Validationmethods to make sure we get userinput in right format
+         and help protect against sql injection.
+         */
         public static bool ValidateString(string input)
         {
             //only letters and space to prevent sql injection
-            string pattern = @"^[a-zA-Z ]+$";
+            string pattern = @"^[a-zA-Z -]+$";
             return Regex.IsMatch(input, pattern);
         }
         public static bool ValidatePersonalNumber(string input)

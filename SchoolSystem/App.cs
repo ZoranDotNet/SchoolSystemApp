@@ -26,68 +26,57 @@ namespace SchoolSystem
                 switch (option)
                 {
                     case 1:
-                        ado.GetEmployees();
+                        ado.EmployeeOptions();
                         Console.ReadKey();
                         break;
 
                     case 2:
-                        dbContext.GetStudents();
+                        dbContext.StudentOptions();
                         Console.ReadKey();
                         break;
 
                     case 3:
-                        ado.AddEmployee();
-                        Console.ReadKey();
-                        break;
-
-                    case 4:
-                        dbContext.AddStudent();
-                        Console.ReadKey();
-                        break;
-
-                    case 5:
-                        dbContext.EditStudent();
-                        Console.ReadKey();
-                        break;
-
-                    case 6:
                         dbContext.ListActiveCourses();
                         Console.ReadKey();
                         break;
 
-                    case 7:
+                    case 4:
                         ado.PayrollStats();
                         Console.ReadKey();
                         break;
 
-                    case 8:
+                    case 5:
                         ado.TeacherInfo();
                         Console.ReadKey();
                         break;
 
-                    case 9:
+                    case 6:
                         dbContext.EmployeePerDepartment();
                         Console.ReadKey();
                         break;
 
-                    case 10:
+                    case 7:
                         ado.StudentCourseInfo();
                         Console.ReadKey();
                         break;
 
-                    case 11:
+                    case 8:
                         dbContext.RegisterStudentToCourse();
                         Console.ReadKey();
                         break;
 
-                    case 12:
+                    case 9:
                         ado.SetGrade();
                         Console.ReadKey();
                         break;
 
-                    case 13:
+                    case 10:
                         ado.DeleteStudent();
                         Console.ReadKey();
+                        break;
+
+                    case 11:
+                        loop = false;
                         break;
                 }
             }
@@ -110,30 +99,28 @@ namespace SchoolSystem
             {
                 Console.SetCursorPosition(left, top);
 
-                Console.WriteLine($"{(option == 1 ? decorator : "   ")}1 All Employees\u001b[34m");
-                Console.WriteLine($"{(option == 2 ? decorator : "   ")}2 All Students\u001b[34m");
-                Console.WriteLine($"{(option == 3 ? decorator : "   ")}3 Add New Employee\u001b[34m");
-                Console.WriteLine($"{(option == 4 ? decorator : "   ")}4 Add New Student\u001b[34m");
-                Console.WriteLine($"{(option == 5 ? decorator : "   ")}5 Edit Student\u001b[34m");
-                Console.WriteLine($"{(option == 6 ? decorator : "   ")}6 Show Active Courses\u001b[34m");
-                Console.WriteLine($"{(option == 7 ? decorator : "   ")}7 Payroll Statistics\u001b[34m");
-                Console.WriteLine($"{(option == 8 ? decorator : "   ")}8 Show Teachers - Courses\u001b[34m");
-                Console.WriteLine($"{(option == 9 ? decorator : "   ")}9 Employees / Department\u001b[34m");
-                Console.WriteLine($"{(option == 10 ? decorator : "   ")}10 Student Course Info\u001b[34m");
-                Console.WriteLine($"{(option == 11 ? decorator : "   ")}11 Register student to Course\u001b[34m");
-                Console.WriteLine($"{(option == 12 ? decorator : "   ")}12 Set Grade\u001b[34m");
-                Console.WriteLine($"{(option == 13 ? decorator : "   ")}13 Delete Student\u001b[34m");
+                Console.WriteLine($"{(option == 1 ? decorator : "   ")}1 Employees\u001b[34m");
+                Console.WriteLine($"{(option == 2 ? decorator : "   ")}2 Students\u001b[34m");
+                Console.WriteLine($"{(option == 3 ? decorator : "   ")}3 Show Active Courses\u001b[34m");
+                Console.WriteLine($"{(option == 4 ? decorator : "   ")}4 Payroll Statistics\u001b[34m");
+                Console.WriteLine($"{(option == 5 ? decorator : "   ")}5 Show Teachers - Courses\u001b[34m");
+                Console.WriteLine($"{(option == 6 ? decorator : "   ")}6 Employees / Department\u001b[34m");
+                Console.WriteLine($"{(option == 7 ? decorator : "   ")}7 Student Course Info\u001b[34m");
+                Console.WriteLine($"{(option == 8 ? decorator : "   ")}8 Register student to Course\u001b[34m");
+                Console.WriteLine($"{(option == 9 ? decorator : "   ")}9 Set Grade\u001b[34m");
+                Console.WriteLine($"{(option == 10 ? decorator : "   ")}10 Delete Student\u001b[34m");
+                Console.WriteLine($"{(option == 11 ? decorator : "   ")}11 Exit\u001b[34m");
 
                 key = Console.ReadKey(false);
 
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        option = option == 1 ? 13 : option - 1;
+                        option = option == 1 ? 11 : option - 1;
                         break;
 
                     case ConsoleKey.DownArrow:
-                        option = option == 13 ? 1 : option + 1;
+                        option = option == 11 ? 1 : option + 1;
                         break;
 
                     case ConsoleKey.Enter:
