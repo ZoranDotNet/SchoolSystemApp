@@ -358,7 +358,7 @@ internal class AdoCommands
     }
     public void StudentCourseInfo()
     {
-        //calling a StoredProcedure where we list all courses the student is assigned to
+        //calling a Stored Procedure where we list all courses the student is assigned to + grade if course is finished
         int studentId = GetStudentId();
 
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -375,14 +375,15 @@ internal class AdoCommands
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             Console.WriteLine("Student is assigned to these courses");
-                            Console.WriteLine("*  Name  *  Course  *  Starts  *  Ends  *  Grade  *  GradeDate\n");
+                            Console.WriteLine("*  Name    *    Course  *  Starts  *  Ends  *  Grade  *  GradeDate\n");
                             while (reader.Read())
                             {
-                                //Need this to get just the date without time
+                                //If there is a gradedate we print it otherwise a blank row
+                                string gradeDate = reader["GradeDate"] != DBNull.Value ? ((DateTime)reader["GradeDate"]).ToString("yyyy-MM-dd") : "";
                                 string start = ((DateTime)reader["StartDate"]).ToString("yyyy-MM-dd");
                                 string end = ((DateTime)reader["EndDate"]).ToString("yyyy-MM-dd");
 
-                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["Course"]} * {start} * {end}      {reader["Grade"]}       {reader["GradeDate"]}");
+                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["Course"]} * {start} -- {end}     {reader["Grade"]} * {gradeDate}");
                             }
                         }
                     }
@@ -431,7 +432,7 @@ internal class AdoCommands
     }
     public void DeleteStudent()
     {
-        //StoredProcedure with Transaction. When we delete a student we save the student in a secret table
+        //Stored Procedure with Transaction. When we delete a student we save the student in a secret table
         int id = GetStudentId();
 
         using (SqlConnection connection = new SqlConnection(connectionString))

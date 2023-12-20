@@ -21,7 +21,7 @@ public partial class SchoolSystemContext : DbContext
         int option;
         while (!int.TryParse(Console.ReadLine(), out option) || option > 3 || option < 1)
         {
-            Console.WriteLine("Try again");
+            Console.WriteLine("Try again, valid numbers 1-3");
         }
 
         if (option == 1)
