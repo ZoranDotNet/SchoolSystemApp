@@ -164,7 +164,7 @@ public partial class SchoolSystemContext : DbContext
 
         using (var dbContext = new SchoolSystemContext(configuration))
         {
-            var student = dbContext.Students.Where(x => x.StudentId == studentId).FirstOrDefault();
+            var student = dbContext.Students.FirstOrDefault(x => x.StudentId == studentId);
 
             Console.WriteLine("You can now Edit the Student");
             Console.ReadKey();
@@ -207,9 +207,7 @@ public partial class SchoolSystemContext : DbContext
 
         using (var context = new SchoolSystemContext(configuration))
         {
-            var student = context.Students.Where(x => x.FirstName == firstName)
-                .Where(x => x.LastName == lastName)
-                .FirstOrDefault();
+            var student = context.Students.FirstOrDefault(x => x.FirstName == firstName && x.LastName == lastName);
 
             return student.StudentId;
         }
@@ -223,7 +221,7 @@ public partial class SchoolSystemContext : DbContext
         ListAvailableCourses();
         using (var context = new SchoolSystemContext(configuration))
         {
-            var selectedstudent = context.Students.Where(x => x.StudentId == id).FirstOrDefault();
+            var selectedstudent = context.Students.FirstOrDefault(x => x.StudentId == id);
 
             StudentCourse sc = new StudentCourse();
             if (selectedstudent != null)
@@ -291,7 +289,7 @@ public partial class SchoolSystemContext : DbContext
         {
             if (selectedCourse != null)
             {
-                Course foundCourse = dbContext.Courses.Where(x => x.CourseName.ToLower() == selectedCourse.ToLower()).FirstOrDefault();
+                Course foundCourse = dbContext.Courses.FirstOrDefault(x => x.CourseName.ToLower() == selectedCourse.ToLower());
                 return foundCourse;
             }
             else
