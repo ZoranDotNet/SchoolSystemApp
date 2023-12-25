@@ -7,7 +7,6 @@ internal class Program
     static void Main(string[] args)
     {
         IConfiguration configuration = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
         .AddJsonFile("appsettings.json")
         .Build();
 
