@@ -375,7 +375,7 @@ internal class AdoCommands
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             Console.WriteLine("Student is assigned to these courses");
-                            Console.WriteLine("*  Name    *    Course  *  Starts  *  Ends  *  Grade  *  GradeDate\n");
+                            Console.WriteLine("*  Name    *    Course  *  Starts  *  Ends  *  Teacher - Name  *  Grade  *  GradeDate\n");
                             while (reader.Read())
                             {
                                 //If there is a gradedate we print it otherwise a blank row
@@ -383,7 +383,7 @@ internal class AdoCommands
                                 string start = ((DateTime)reader["StartDate"]).ToString("yyyy-MM-dd");
                                 string end = ((DateTime)reader["EndDate"]).ToString("yyyy-MM-dd");
 
-                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["Course"]} * {start} -- {end}     {reader["Grade"]} * {gradeDate}");
+                                Console.WriteLine($"{reader["FirstName"]} {reader["LastName"]} * {reader["Course"]} * {start} -- {end} {reader["Teacher"]} {reader["Name"]} {reader["Grade"]} * {gradeDate}");
                             }
                         }
                     }
