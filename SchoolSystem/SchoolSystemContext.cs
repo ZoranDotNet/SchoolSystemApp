@@ -130,12 +130,10 @@ public partial class SchoolSystemContext : DbContext
     {
         using (var dbContext = new SchoolSystemContext(configuration))
         {
-            IQueryable<Course> courseList = dbContext.Courses;
-
-            var filteredList = courseList.Where(c => c.StartDate <= DateOnly.FromDateTime(DateTime.Now)).Where(x => x.EndDate >= DateOnly.FromDateTime(DateTime.Now)).ToList();
+            IQueryable<Course> activeCourses = dbContext.Courses.Where(c => c.StartDate <= DateOnly.FromDateTime(DateTime.Now)).Where(x => x.EndDate >= DateOnly.FromDateTime(DateTime.Now));
 
             Console.WriteLine("CourseName | Start | End ");
-            foreach (var course in filteredList)
+            foreach (var course in activeCourses)
             {
                 Console.WriteLine($"{course.CourseName} * {course.StartDate} -- {course.EndDate}");
             }
