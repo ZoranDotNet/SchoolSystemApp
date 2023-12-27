@@ -209,9 +209,11 @@ public partial class SchoolSystemContext : DbContext
 
         using (var context = new SchoolSystemContext(configuration))
         {
-            var student = context.Students.FirstOrDefault(x => x.FirstName == firstName && x.LastName == lastName);
+            var studentId = context.Students.Where(x => x.FirstName == firstName && x.LastName == lastName)
+                                            .Select(x => x.StudentId)
+                                            .FirstOrDefault();
 
-            return student.StudentId;
+            return studentId;
         }
     }
     public void RegisterStudentToCourse()
